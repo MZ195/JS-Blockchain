@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/MZ195/Py-Blockchain/issues"
   },
-  "homepage": "https://github.com/MZ195/Py-Blockchain#readme"
+  "homepage": "https://github.com/MZ195/Py-Blockchain#readme",
+  "dependencies": {
+    "sha256": "^0.2.0"
+  }
 }
