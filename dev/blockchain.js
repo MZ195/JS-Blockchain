@@ -2,11 +2,11 @@ const sha256 = require('sha256')
 
 function Blockchain() {
     // This array will hold all verified blocks
-    this.chain = [];
+    this.chain = [] 
     // this array will hold a list of transactions before they are placed in a block and mined
-    this.pendingTransactions = [];
+    this.pendingTransactions = []
     // genesis block
-    this.createNewBlock(100, '0', '0');
+    this.createNewBlock(100, '0', '0')
 }
 
 Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
@@ -17,15 +17,15 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
         nonce: nonce,
         hash: hash,
         previousBlockHash: previousBlockHash
-    };
+    }
 
-    this.pendingTransactions = [];
-    this.chain.push(newBlock);
-    return newBlock;
+    this.pendingTransactions = []
+    this.chain.push(newBlock)
+    return newBlock
 }
 
 Blockchain.prototype.getLastBlock = function() {
-    return this.chain[this.chain.length - 1];
+    return this.chain[this.chain.length - 1]
 }
 
 Blockchain.prototype.createNewTransaction = function(amount, sender, recipient) {
@@ -33,17 +33,17 @@ Blockchain.prototype.createNewTransaction = function(amount, sender, recipient) 
         amount: amount,
         sender: sender,
         recipient: recipient
-    };
+    }
 
-    this.pendingTransactions.push(newTransaction);
+    this.pendingTransactions.push(newTransaction)
 
-    return this.getLastBlock()['index'] + 1;
+    return this.getLastBlock()['index'] + 1
 }
 
 Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce) {
-    let dataAsString = previousBlockHash + JSON.stringify(currentBlockData) + nonce.toString();
-    let hash = sha256(dataAsString);
-    return hash;
+    let dataAsString = previousBlockHash + JSON.stringify(currentBlockData) + nonce.toString()
+    let hash = sha256(dataAsString)
+    return hash
 }
 
 Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData) {
@@ -52,16 +52,16 @@ Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData)
     // continouusly changes the nonce value until it finds the correct hash
     // returns the nonce value that produced the correct hash
 
-    let nonce = 0;
-    let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+    let nonce = 0
+    let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce)
 
     while(hash.substring(0, 4) !== '0000'){
-        nonce++;
-        hash = this.hashBlock(previousBlockHash, currentBlockData, nonce);
+        nonce++
+        hash = this.hashBlock(previousBlockHash, currentBlockData, nonce)
     }
 
-    return nonce;
+    return nonce
 }
 
 
-module.exports = Blockchain;
+module.exports = Blockchain
