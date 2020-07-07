@@ -1,5 +1,7 @@
 const sha256 = require('sha256')
 
+const currentNodeURL = process.argv[3]
+
 function Blockchain() {
     // This array will hold all verified blocks
     this.chain = [] 
@@ -7,6 +9,10 @@ function Blockchain() {
     this.pendingTransactions = []
     // genesis block
     this.createNewBlock(100, '0', '0')
+    // the url of the hosting node
+    this.currentNodeURL = currentNodeURL
+    // the list of all nodes in the network
+    this.networkNodes = []
 }
 
 Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash) {
