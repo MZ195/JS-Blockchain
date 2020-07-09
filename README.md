@@ -2,7 +2,7 @@
 
 ## INTRODUCTION
 The purpose of this project is to develop a solid understanding of how Blockchain technology works.
-This project is a proof of concept. Hence, all implemented feature are related to how hashing can keep the chain secure from modifying from uh-honset nodes in the network.
+This project is a proof of concept. Hence, all implemented feature are related to how hashing can keep the chain secure from modifying from un-honest nodes in the network.
 
 ## ABOUT BLOCKCHAIN
 The goal of blockchain is to allow digital information to be recorded and distributed, but not edited.
@@ -18,7 +18,7 @@ Each node in the network have different endpoints that help keep the network syn
 
 The chain starts by the [`Genesis block`](https://en.bitcoin.it/wiki/Genesis_block). After that, every new transaction will be held pending untill we reach a predefined size for each block then the [`mining`](https://www.investopedia.com/terms/b/bitcoin-mining.asp) take place.
 
-In mining, we keep hashing the transaction data using [`SHA256`](https://www.movable-type.co.uk/scripts/sha256.html) with a [`nonce`](https://www.investopedia.com/terms/n/nonce.asp) untill we finde a nonce that will produce a hash with a 4 leading 0s.
+In mining, we keep hashing the transaction data using [`SHA256`](https://www.movable-type.co.uk/scripts/sha256.html) with a [`nonce`](https://www.investopedia.com/terms/n/nonce.asp) untill we find a nonce that will produce a hash with a 4 leading 0s.
 
 The number of zeros defines the difficulty of a blockchain, more zeros will result in more computation power to calculate the correct hash.
 
