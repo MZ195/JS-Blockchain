@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 // getting the port from the command
 const port = process.argv[2]
 const Blockchain = require('./blockchain')
+const requestPromise = require('request-promise')
 
 const app = express()
 const bitcoin = new Blockchain()
@@ -210,6 +211,107 @@ app.post('/register-nodes-bulk', function(req, res) {
     res.json({
         note: "Bulk registration successful."
     })
+})
+
+app.get('/consensus', function(req, res) {
+    
+    const requestPromises = []
+    bitcoin.networkNodes.forEach(networkNodeURK => {
+        const requestOptions = {
+            uri: networkNodeURK + '/blockchain',
+            method: 'GET',
+            json: true
+        }
+
+        requestPromises.push(rp(requestOptions))
+    })
+
+    Promise.all(requestPromises)
+    .then(blockchains => {
+        const currentBlockchainLength = bitcoin.chain.length
+        let maxChainLength = currentBlockchainLength
+        let newLongestChain = null
+        let newPendingTransactions = null
+
+        blockchains.forEach(blockchain => {
+            // we want to see if there is a blockchain longer than the blockchain hosted on the current node
+            if(blockchain.chain.length > maxChainLength){
+                maxChainLength = blockchain.chain.length
+                newLongestChain = blockchain.chain
+                newPendingTransactions = blockchain.pendingTransactions
+            }
+        })
+
+        if(newLongestChain === null || (!bitcoin.chainIsValid(newLongestChain))){
+            res.json({
+                note: "Current chain has not been replaced.",
+                chain: bitcoin.chain
+            })
+        } else if(newLongestChain !== null && bitcoin.chainIsValid(newLongestChain)){
+            bitcoin.chain = newLongestChain
+            bitcoin.pendingTransactions = newPendingTransactions
+
+            res.json({
+                note: "Current chain has been repleaces.",
+                chain: bitcoin.chain
+            })
+        }
+    })
+})
+
+// ---------------------------------------------------------------------------------------
+// block explorer endpoints
+
+// receive a hash block and return the details about that block
+app.get('/block/:blockHash', function(req, res) {
+    const blockHash = req.params.blockHash
+    let result = bitcoin.getBlock(blockHash)
+
+    if(result !== null){
+        res.json({
+            note: "Block fetched successfully.",
+            block: result
+        })
+    }else {
+        res.json({
+            note: "Block does not exists."
+        })
+    }
+})
+
+// receive a transaction ID and return the details about that transaction
+app.get('/transaction/:transactionId', function(req, res) {
+    const transactionId = req.params.transactionId
+    result = bitcoin.getTransaction(transactionId)
+
+    if(result !== null){
+        res.json({
+            note:"Transaction fetched successfully.",
+            block: result.block,
+            transaction: result.transaction
+        })
+    } else {
+        res.json({
+            note: "Transaction ID does not exists!"
+        })
+    }
+})
+
+// receive a specific address and returns all transactions done by that user + the current balance of that address
+app.get('/address/:address', function(req, res) {
+    const address = req.params.address
+
+    result = bitcoin.getAddressData(address)
+
+    res.json({
+        note: "Address Data fetched successfully.",
+        addressTransactions: result.addressTransactions,
+        addressBalance: result.addressBalance
+    })
+})
+
+app.get('/block-explorer', function(req, res) {
+    res.sendFile('./block-explorer/index.html', {root: __dirname})
 })
 
 app.listen(port, function () {

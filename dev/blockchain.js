@@ -106,4 +106,60 @@ Blockchain.prototype.chainIsValid = function(blockchain) {
     return validChain
 }
 
+// we implemented it this way to handel the case if the hash does not exists
+Blockchain.prototype.getBlock = function(blockHash) {
+   this.chain.forEach(block => {
+        if(block['hash'] === blockHash){
+            return block
+        }
+    })
+
+    return null
+}
+
+// I don't like the performance of this one
+// I should be able to get the data using hashing
+Blockchain.prototype.getTransaction = function(transactionId) {
+    this.chain.forEach(block => {
+        block.transactions.forEach(transaction => {
+            if(transaction.transactionId === transactionId){
+                return {
+                    transaction: transaction,
+                    block: block 
+                }
+            }
+        })
+    })
+
+    return null
+}
+
+// I don't like the performance of this one
+// I should be able to get the data using hashing
+Blockchain.prototype.getAddressData = function(address) {
+    let addressTransactions = []
+
+    this.chain.forEach(block => {
+        block.transactions.forEach(transaction => {
+            if(transaction.sender === address || transaction.recipient === address) {
+                addressTransactions.push(transaction)
+            }
+        })
+    })
+
+    let balance = 0
+    addressTransactions.forEach(transaction => {
+        if(transaction.recipient === address){
+            balance += transaction.amount
+        } else {
+            balance -= transaction.amount
+        }
+    })
+
+    return {
+        addressTransactions: addressTransactions,
+        addressBalance: balance
+    }
+}
+
 module.exports = Blockchain
