@@ -31,7 +31,6 @@ This project consist of two main files:
 `blockchain.js` which have all needed methods access and modefiy the shared blockchain.
 
 `networkNode.js` which is the Express server with all required endpoints to operate the network.
-
 <pre> 
 /dev/
 |-- blockchain.js
@@ -68,7 +67,7 @@ This project consist of two main files:
 ## HOW TO RUN
 You can create multiple nodes by running networkNode.js on maultiple ports using a single machine.
 
-Make sure you're in the /dev folder and run this
+Make sure you're in the /dev folder and run this using Powershell
 ```Powershell
 For ($i=1; $i -le 5; $i++) {
     invoke-expression "cmd /c start powershell -Command { nodemon.cmd --watch dev -e js networkNode.js 909$($i) http://localhost:909$($i)}"
