@@ -4,7 +4,7 @@ const Blockchain = require("../../dev/blockchain");
 const bitcoin = new Blockchain();
 
 // creates a new transaction and adds it to the pending transactions
-router.post("/transaction", function (req, res) {
+router.post("/", function (req, res) {
   const newTransaction = req.body;
   let blockIndex = bitcoin.addTransactionToPendingTransactions(newTransaction);
 
@@ -14,7 +14,7 @@ router.post("/transaction", function (req, res) {
 });
 
 // creates new transaction AND will broadcast that transaction to all nodes
-router.post("/transaction/broadcast", function (req, res) {
+router.post("/broadcast", function (req, res) {
   let amount = req.body.amount;
   let sender = req.body.sender;
   let recipient = req.body.recipient;
@@ -29,7 +29,7 @@ router.post("/transaction/broadcast", function (req, res) {
   const requestPromises = [];
   bitcoin.networkNodes.forEach((networkNodeURL) => {
     const requestOptions = {
-      uri: networkNodeURL + "/transaction",
+      uri: networkNodeURL + "/",
       method: "POST",
       body: newTransaction,
       json: true,

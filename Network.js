@@ -8,6 +8,9 @@ const bodyParser = require("body-parser");
 const port = process.argv[2];
 
 const app = express();
+app.use(bodyParser.json());
+app.use(morgan("combined"));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const broadcast = require("./routes/api/boradcasting");
 const blockExplorer = require("./routes/api/blockExplorer");
@@ -23,10 +26,6 @@ app.use("/api/transaction/", transaction);
 
 // unique node address to each node in the network
 const nodeAddress = uuid.v1().split("-").join("");
-
-app.use(bodyParser.json());
-app.use(morgan("combined"));
-app.use(bodyParser.urlencoded({ extended: false }));
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
